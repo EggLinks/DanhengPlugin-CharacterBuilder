@@ -7,6 +7,7 @@ using EggLink.DanhengServer.Database.Inventory;
 using EggLink.DanhengServer.Enums.Avatar;
 using EggLink.DanhengServer.Enums.Item;
 using EggLink.DanhengServer.Internationalization;
+using EggLink.DanhengServer.Util;
 
 namespace DanhengPlugin.CharacterBuilder.Commands;
 
@@ -78,6 +79,11 @@ public class CommandBuild : ICommand
     {
         // build avatar
         var player = arg.Target!.Player!;
+        if (player.InventoryManager!.Data.RelicItems.Count + 6 > GameConstants.INVENTORY_MAX_RELIC)
+        {
+            await arg.SendMsg(I18NManager.Translate("CharacterBuilder.InventoryRelicMax"));
+            return;
+        }
         PluginGameData.AvatarRelicRecommendData.TryGetValue(avatar.GetAvatarId(), out var excel);
         if (excel == null)
         {
